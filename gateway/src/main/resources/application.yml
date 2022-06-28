@@ -1,0 +1,33 @@
+server:
+  port: 8080
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: api_gateway
+
+# Gateway Configuration
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 1000
+        response-timeout: 5s
+      routes:
+      - id: user_service
+        uri: http://localhost:8082/
+        predicates:
+         - Path=/user/**
+        filter:
+        - StripPrefix=1
+      - id: order_service
+        uri: http://localhost:8084
+        predicates:
+         - Path=/order/**
+        filter:
+         - StripPrefix=1
